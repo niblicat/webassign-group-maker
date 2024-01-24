@@ -3,10 +3,9 @@ from openpyxl import Workbook
 import csv
 import os
 
-wb = Workbook()
-ws = wb.active
-
 def CreateXLSXFromCSV(name = 'input.csv'):
+    wb = Workbook()
+    ws = wb.active
     
     with open('testdoc.csv') as f:
         reader = csv.reader(f, delimiter=',')
