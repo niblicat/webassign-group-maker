@@ -1,7 +1,6 @@
 import pandas as pd
 from openpyxl import Workbook
 import csv
-import os
 
 def CreateXLSXFromCSV(name = 'input.csv'):
     wb = Workbook()
