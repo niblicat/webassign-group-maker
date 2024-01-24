@@ -14,16 +14,18 @@ def CreateXLSXFromCSV(name = 'input.csv'):
                 ws.cell(row=row_index, column=column_index).value=cell_value
     wb.save('group_make.xlsx')
 
+def SortXLSX(name = "group_make.xlsx"):
+    myFile = pd.read_excel(f"{name}", engine="openpyxl")
+
+    myFile.sort_values(by=myFile.columns[7], inplace=True, ascending=False)
+    myFile.reset_index(drop=True, inplace=True)
+    return myFile
+
 def main():
     inputFileName = input("file name: ")
     CreateXLSXFromCSV(inputFileName)
 
-    myFile = pd.read_excel(r"group_make.xlsx", engine="openpyxl")
-
-    print(myFile['First Name'][0])
-
-    myFile.sort_values(by=myFile.columns[7], inplace=True, ascending=False)
-    myFile.reset_index(drop=True, inplace=True)
+    myFile = SortXLSX()
 
     scores = myFile.iloc[:, 7]
     fullName = myFile.iloc[:, 0] + ', ' + myFile.iloc[:, 1]
