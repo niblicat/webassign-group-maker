@@ -2,6 +2,7 @@ import pandas as pd
 from openpyxl import Workbook
 import csv
 from typing import List
+import random
 
 def CreateXLSXFromCSV(name = 'input.csv'):
     wb = Workbook()
@@ -22,7 +23,7 @@ def SortXLSX(name = "group_make.xlsx"):
     myFile.reset_index(drop=True, inplace=True)
     return myFile
 
-def MakeGroups(students: pd.DataFrame, min: int):
+def MakeGroups(students: pd.DataFrame, min: int) -> List[pd.DataFrame]:
     total = students.__len__()
     numGroups = total // min
 
@@ -40,6 +41,21 @@ def MakeGroups(students: pd.DataFrame, min: int):
     # print(result)
     return groups
 
+def RandomiseStudents(students: pd.DataFrame, tolerance: int = 80) -> pd.DataFrame:
+    size = students.shape[0]
+    print(students)
+    for i in range(size):
+        silliness = random.randint(0, 1000)
+        if silliness < tolerance:
+            newPos = random.randint(0, size - 1)
+            if newPos != i:
+                print(i, newPos)
+                temp = students.iloc[i].copy()
+                students.iloc[i] = students.iloc[newPos]
+                students.iloc[newPos] = temp
+    print(students)
+    
+    return students
 
 def main():
     inputFileName = input("file name: ")
@@ -55,6 +71,7 @@ def main():
     students = pd.DataFrame({'name': names, 'score': scores})
     print(students)
 
+    students = RandomiseStudents(students, 100)
     groups = MakeGroups(students, 4)
 
 if __name__ == "__main__":
