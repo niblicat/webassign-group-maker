@@ -19,7 +19,6 @@ def CreateXLSXFromCSV(name = 'input.csv'):
 
 def SortXLSX(name = "group_make.xlsx"):
     myFile = pd.read_excel(f"{name}", engine="openpyxl")
-    # print(myFile)
 
     myFile.sort_values(by=myFile.columns[7], inplace=True, ascending=True)
     myFile.reset_index(drop=True, inplace=True)
