@@ -58,9 +58,7 @@ def HTMLFromGroups(groups: list[pd.DataFrame]) -> str:
     i: int = 0
     for group in groups:
         result += "<tr><td>" + str(i) + "</td>"
-        print("GPTYPE", str(type(group)))
         for student in group.iterrows():
-            print("STUDENTTYPE", str(type(student)))
             result += "<td>" + str(student[1]['name']) + "</td>"
         result += "</tr>"
         i += 1
