@@ -36,27 +36,18 @@ def MakeGroups(students: pd.DataFrame, min: int) -> List[pd.DataFrame]:
         row = pd.DataFrame({'name': [students.at[i, 'name']], 'group': group_index, 'score': [students.at[i, 'score']]})
         groups[group_index] = pd.concat([groups[group_index], row], ignore_index=True)
 
-    # Concatenate the list of DataFrames into one DataFrame
-    # result = pd.concat(groups, ignore_index=True)
-    # print(groups)
-    # print(str(type(groups)))
-    # print("num groups",numGroups)
-    # print(result)
     return groups
 
 def RandomiseStudents(students: pd.DataFrame, tolerance: int = 80) -> pd.DataFrame:
     size = students.shape[0]
-    # print(students)
     for i in range(size):
         silliness = random.randint(0, 1000)
         if silliness < tolerance:
             newPos = random.randint(0, size - 1)
             if newPos != i:
-                # print(i, newPos)
                 temp = students.iloc[i].copy()
                 students.iloc[i] = students.iloc[newPos]
                 students.iloc[newPos] = temp
-    # print(students)
     
     return students
 
@@ -88,8 +79,6 @@ def main() -> None:
     scores = myFile.iloc[:, 7]
     names = myFile.iloc[:, 0] + ', ' + myFile.iloc[:, 1]
 
-    # print(names)
-    # print(scores)
     students = pd.DataFrame({'name': names, 'group': -1, 'score': scores})
     print(students)
 
