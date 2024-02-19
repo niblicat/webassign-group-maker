@@ -3,12 +3,13 @@ from openpyxl import Workbook
 import csv
 from typing import List
 import random
+import os
 
 def CreateXLSXFromCSV(name = 'input.csv'):
     wb = Workbook()
     ws = wb.active
     
-    with open('testdoc.csv') as f:
+    with open(name) as f:
         reader = csv.reader(f, delimiter=',')
 
         for row_index, row in enumerate(reader, start=1):
@@ -18,6 +19,7 @@ def CreateXLSXFromCSV(name = 'input.csv'):
 
 def SortXLSX(name = "group_make.xlsx"):
     myFile = pd.read_excel(f"{name}", engine="openpyxl")
+    # print(myFile)
 
     myFile.sort_values(by=myFile.columns[7], inplace=True, ascending=True)
     myFile.reset_index(drop=True, inplace=True)
@@ -31,33 +33,53 @@ def MakeGroups(students: pd.DataFrame, min: int) -> List[pd.DataFrame]:
     
     for i in range(total):
         group_index = i % numGroups
-        row = pd.DataFrame({'name': [students.at[i, 'name']], 'score': [students.at[i, 'score']]})
+        row = pd.DataFrame({'name': [students.at[i, 'name']], 'group': group_index, 'score': [students.at[i, 'score']]})
         groups[group_index] = pd.concat([groups[group_index], row], ignore_index=True)
 
     # Concatenate the list of DataFrames into one DataFrame
     # result = pd.concat(groups, ignore_index=True)
-    print(groups)
+    # print(groups)
+    # print(str(type(groups)))
     # print("num groups",numGroups)
     # print(result)
     return groups
 
 def RandomiseStudents(students: pd.DataFrame, tolerance: int = 80) -> pd.DataFrame:
     size = students.shape[0]
-    print(students)
+    # print(students)
     for i in range(size):
         silliness = random.randint(0, 1000)
         if silliness < tolerance:
             newPos = random.randint(0, size - 1)
             if newPos != i:
-                print(i, newPos)
+                # print(i, newPos)
                 temp = students.iloc[i].copy()
                 students.iloc[i] = students.iloc[newPos]
                 students.iloc[newPos] = temp
-    print(students)
+    # print(students)
     
     return students
 
-def main():
+def HTMLFromGroups(groups: list[pd.DataFrame]) -> str:
+    result = "<html lang='en'><head><title>Groups</title></head><body><h1>Groups</h1>"
+    result += "<table>"
+    result += "<tr><th>Group</th>"
+    result += "<th>Person1</th><th>Person2</th><th>Person3</th><th>Person4</th>"
+    i: int = 0
+    for group in groups:
+        result += "<tr><td>" + str(i) + "</td>"
+        print("GPTYPE", str(type(group)))
+        for student in group.iterrows():
+            print("STUDENTTYPE", str(type(student)))
+            result += "<td>" + str(student[1]['name']) + "</td>"
+        result += "</tr>"
+        i += 1
+    result += "</table>"
+    result += "</body></html>"
+    result += "<style>.myflex{ display: flex; }</style>"
+    return result
+
+def main() -> None:
     inputFileName = input("file name: ")
     CreateXLSXFromCSV(inputFileName)
 
@@ -68,11 +90,20 @@ def main():
 
     # print(names)
     # print(scores)
-    students = pd.DataFrame({'name': names, 'score': scores})
+    students = pd.DataFrame({'name': names, 'group': -1, 'score': scores})
     print(students)
 
     students = RandomiseStudents(students, 100)
     groups = MakeGroups(students, 4)
+
+    outputFile = open('output.html', 'w')
+
+    output = HTMLFromGroups(groups)
+
+    outputFile.write(output)
+
+    os.startfile("output.html")
+
 
 if __name__ == "__main__":
     main()
