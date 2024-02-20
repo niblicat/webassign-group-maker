@@ -50,7 +50,7 @@ def RandomiseStudents(students: pd.DataFrame, tolerance: int = 80) -> pd.DataFra
     
     return students
 
-def HTMLFromGroups(groups: list[pd.DataFrame]) -> str:
+def HTMLFromGroupsOld(groups: list[pd.DataFrame]) -> str:
     result = "<html lang='en'><head><title>Groups</title></head><body><h1>Groups</h1>"
     result += "<table>"
     result += "<tr><th>Group</th>"
@@ -65,6 +65,25 @@ def HTMLFromGroups(groups: list[pd.DataFrame]) -> str:
     result += "</table>"
     result += "</body></html>"
     result += "<style>.myflex{ display: flex; }</style>"
+    return result
+
+def HTMLFromGroups(groups: list[pd.DataFrame]) -> str:
+    result = "<html lang='en'><head><title>Groups</title></head><body><h1>Groups</h1>"
+    result += "<div class='myflex'>"
+    i: int = 0
+    for group in groups:
+        result += "<div class='item'><b>Group " + str(i) + "</b><br>"
+        for student in group.iterrows():
+            result += "<p>" + str(student[1]['name']) + "</p>"
+        result += "</div>"
+        i += 1
+    result += "</div>"
+    result += "</body></html>"
+    result += "<style>"
+    result += ".myflex { display: flex; flex-wrap: wrap }"
+    result += ".item { border: 1px solid black; margin: 2px; padding: 8px; border-radius: 25px; width: 14em; text-align: center }"
+    result += "p { margin: 0px; padding: 0px; }"
+    result += "</style>"
     return result
 
 def main() -> None:
